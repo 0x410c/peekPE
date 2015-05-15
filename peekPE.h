@@ -1,6 +1,3 @@
-#include<windows.h>
-#include<conio.h>
-#include<stdio.h>
 #include<winnt.h>
 #define DEBUG 1
 class PE{
@@ -9,13 +6,15 @@ class PE{
 	IMAGE_NT_HEADERS peHead;
 	IMAGE_SECTION_HEADER *secHead;
 	char *sections;
+
 };
-class peReader
+class PEIO
 {
 		char *peBuffer,*peName;
 		HANDLE peHandle;
 		unsigned long n;
 		int peSize;
+		PE file;
 public:
 		peFile()
 		{
@@ -57,14 +56,28 @@ public:
 		}
 		int isPeValid()
 		{
-			
-			return 0;
+			if(!ReadFile(host,(void*)&dosMZ,sizeof(dosMZ),&d,NULL))
+			{
+				printf("\nRead Fail");
+				return 0;
+			}
+			if(!(dosMZ.e_magic==IMAGE_DOS_SIGNATURE))
+			{
+				printf("\nNot a Valid PE");
+				return 0;
+			}
+			printf("\nDos Signature Found");
+			SetFilePointer(host,dosMZ.e_lfanew,NULL,FILE_BEGIN);
+			if(!ReadFile(host,(void*)&peHead,sizeof(peHead),&d,NULL))
+			{
+				printf("\nRead Fail");
+				return 0;
+			}
+			if(!(peHead.Signature==IMAGE_NT_SIGNATURE))
+			{
+				printf("\nNot Valid PE");
+				return 0;
+			}
+			return 1;
 		}
 };
-
-int main()
-{
-	printf("peekPE early stage\n");
-	
-	return 0;
-}
