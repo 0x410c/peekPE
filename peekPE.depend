@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
-1431860655 source:c:\users\m0rphiz3\desktop\protector\peekpe\main.cpp
+1431865334 source:c:\users\m0rphiz3\desktop\protector\peekpe\main.cpp
 	<windows.h>
 	<conio.h>
 	<stdio.h>
 	"peekPE.h"
 
-1431864343 c:\users\m0rphiz3\desktop\protector\peekpe\peekpe.h
+1431865700 c:\users\m0rphiz3\desktop\protector\peekpe\peekpe.h
 	<winnt.h>
 

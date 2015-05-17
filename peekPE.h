@@ -26,6 +26,13 @@ public:
 		~PE()
 		{
 		}
+		int printSectionNames()
+		{
+		    for(int i=0;i<peHead.FileHeader.NumberOfSections;i++)
+            {
+                printf("%s",secHead[i].Name);
+            }
+		}
 		int load(char *file)
 		{
 			try
@@ -46,11 +53,9 @@ public:
 				ReadFile(peHandle, (void*)&peHead, sizeof(peHead), &n, NULL);
 				if(peHead.Signature != IMAGE_NT_SIGNATURE)
 					throw "Invalid PE Signature";
-				dosStubSize		=	dosMZ.e_lfanew - sizeof(dosMZ);
-				dosStub			=	(char*)GlobalAlloc(GPTR,dosStubSize);
-				SetFilePointer(peHandle, sizeof(dosMZ), NULL, FILE_BEGIN);
-				ReadFile(peHandle, (void*)dosStub, dosStubSize, &n, NULL);
-                secHead         =   (IMAGE_SECTION_HEADER*)GlobalAlloc(GPTR, (peHead.FileHeader.NumberOfSections)*sizeof(IMAGE_NT_HEADERS));
+
+                secHead         =   (IMAGE_SECTION_HEADER*)GlobalAlloc(GPTR, (peHead.FileHeader.NumberOfSections)*sizeof(IMAGE_SECTION_HEADER));
+                ReadFile(peHandle,(void*)secHead,sizeof(IMAGE_SECTION_HEADER) *peHead.FileHeader.NumberOfSections,&n,NULL);
                 sections        =   (char**)GlobalAlloc(GPTR, peHead.FileHeader.NumberOfSections*sizeof(int));
                 for(int i=0;i<peHead.FileHeader.NumberOfSections;i++)
                 {
@@ -58,6 +63,10 @@ public:
                     SetFilePointer(peHandle,secHead[i].PointerToRawData,NULL,FILE_BEGIN);
                     ReadFile(peHandle, (void*)sections[i],secHead[i].SizeOfRawData,&n,NULL);
                 }
+                dosStubSize		=	dosMZ.e_lfanew - sizeof(dosMZ);
+				dosStub			=	(char*)GlobalAlloc(GPTR,dosStubSize);
+				SetFilePointer(peHandle, sizeof(dosMZ), NULL, FILE_BEGIN);
+				ReadFile(peHandle, (void*)dosStub, dosStubSize, &n, NULL);
 				CloseHandle(peHandle);
 				return 1;
 			}

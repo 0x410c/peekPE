@@ -10,5 +10,6 @@ int main()
 	PE file;
     if(file.load(".\\test.exe"))
         printf("Success!!");
+    file.printSectionNames();
 	return 0;
 }
